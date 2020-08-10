@@ -7,8 +7,13 @@ from sqlalchemy import create_engine, func
 
 from flask import Flask, jsonify
 
+engine = create_engine("sqlite:///Resources/Hawaii.sqlite")
 
+Base = automap_base()
 
+Base.prepare(engine, reflect=True)
+
+Measurement = Base.classes.measurement
 
 app = Flask(__name__)
 
@@ -27,7 +32,7 @@ def home():
 @app.route("/api/v1.0/precipitation")
 def precipitation():
     session = Session(engine)
-    results = session.query(last_year_pd.date, last_year_pd.prcp).all()
+    results = session.query(Measurement.date, Measurement.prcp).all()
     session.close()
 
     all_results = []
